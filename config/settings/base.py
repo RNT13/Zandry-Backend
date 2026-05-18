@@ -1,8 +1,6 @@
 import os
-import dj_database_url
-
-from pathlib import Path
 from datetime import timedelta
+from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -13,10 +11,7 @@ DEBUG = False
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://zandry.vercel.app/"
-]
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "https://zandry.vercel.app/"]
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
 ]
@@ -28,7 +23,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
@@ -36,7 +30,6 @@ INSTALLED_APPS = [
     "django_filters",
     "corsheaders",
     "django_extensions",
-
     "apps.accounts",
     "apps.companies",
     "apps.subscriptions",
@@ -123,15 +116,18 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Zandry API",
     "DESCRIPTION": "Backend API do SaaS Zandry",
     "VERSION": "1.0.0",
+    # Gera componentes separados para request/response e evita tipos TS ambíguos no codegen.
+    "COMPONENT_SPLIT_REQUEST": True,
+    # Expõe operationId previsível para o @rtk-query/codegen-openapi.
+    "OPERATION_ID_METHOD_POSITION": "POST",
+    # Evita enums anônimos e melhora nomes de tipos gerados no frontend.
+    "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
+    "SORT_OPERATION_PARAMETERS": True,
 }
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",

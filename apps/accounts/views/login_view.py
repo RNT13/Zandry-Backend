@@ -1,12 +1,12 @@
 from datetime import timedelta
 
 from django.contrib.auth import authenticate
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from drf_spectacular.utils import extend_schema
 
 from apps.accounts.serializers.auth_request_serializer import LoginRequestSerializer
 from apps.accounts.serializers.auth_response_serializer import LoginResponseSerializer
@@ -15,10 +15,7 @@ from apps.accounts.serializers.auth_response_serializer import LoginResponseSeri
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
-    @extend_schema(
-        request=LoginRequestSerializer,
-        responses={200: LoginResponseSerializer}
-    )
+    @extend_schema(request=LoginRequestSerializer, responses={200: LoginResponseSerializer})
     def post(self, request):
         serializer = LoginRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

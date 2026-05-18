@@ -1,7 +1,8 @@
-from .base import *
-
 import os
+
 import dj_database_url
+
+from .base import *
 
 DEBUG = False
 
@@ -12,9 +13,7 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "https://zandry.vercel.app")
 CORS_ALLOWED_ORIGINS = [FRONTEND_URL]
 CSRF_TRUSTED_ORIGINS = [FRONTEND_URL]
 
-DATABASES = {
-    "default": dj_database_url.config(conn_max_age=600, ssl_require=True)
-}
+DATABASES = {"default": dj_database_url.config(conn_max_age=600, ssl_require=True)}
 
 MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

@@ -1,11 +1,10 @@
-from rest_framework import generics, permissions
 from drf_spectacular.utils import extend_schema
+from rest_framework import permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.notifications.models.notification_preference_model import NotificationPreference
 from apps.notifications.serializers.preference_read_serializer import NotificationPreferenceSerializer
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 
 class MyNotificationPreferenceView(APIView):

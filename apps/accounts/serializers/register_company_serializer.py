@@ -1,13 +1,13 @@
 from rest_framework import serializers
 
 from .auth_request_serializer import (
-    AuthOwnerRegisterSerializer,
-    AuthCompanyRegisterSerializer,
     AuthAddressRegisterSerializer,
-    AuthBusinessHourRegisterSerializer,
     AuthAdvantagesRegisterSerializer,
-    AuthServiceRegisterSerializer,
+    AuthBusinessHourRegisterSerializer,
+    AuthCompanyRegisterSerializer,
+    AuthOwnerRegisterSerializer,
     AuthProfessionalRegisterSerializer,
+    AuthServiceRegisterSerializer,
     AuthSubscriptionRegisterSerializer,
 )
 
@@ -28,10 +28,6 @@ class RegisterCompanySerializer(serializers.Serializer):
         confirm_password = owner.get("confirm_password")
 
         if confirm_password is not None and password != confirm_password:
-            raise serializers.ValidationError({
-                "owner": {
-                    "confirm_password": "As senhas não coincidem."
-                }
-            })
+            raise serializers.ValidationError({"owner": {"confirm_password": "As senhas não coincidem."}})
 
         return attrs

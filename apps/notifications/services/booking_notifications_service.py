@@ -1,4 +1,4 @@
-from apps.notifications.services.create_notification_service import create_notification, create_delivery
+from apps.notifications.services.create_notification_service import create_delivery, create_notification
 
 
 def notify_booking_created(*, appointment, client=None):

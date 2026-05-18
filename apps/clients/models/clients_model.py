@@ -1,4 +1,5 @@
 from django.db import models
+
 from common.models import BaseTenantModel
 
 
@@ -15,12 +16,7 @@ class Client(BaseTenantModel):
     class Meta:
         db_table = "clients"
         ordering = ["full_name"]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["company", "phone"],
-                name="unique_client_phone_per_company"
-            )
-        ]
+        constraints = [models.UniqueConstraint(fields=["company", "phone"], name="unique_client_phone_per_company")]
 
     def __str__(self):
         return f"{self.full_name} - {self.phone}"

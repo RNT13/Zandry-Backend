@@ -16,7 +16,7 @@
 SERVICE_NAME = web
 # Define o comando base para executar comandos Python dentro do contêiner.
 # Usamos 'poetry run' para garantir que o ambiente virtual correto seja usado.
-PYTHON_EXEC = docker-compose exec $(SERVICE_NAME) poetry run python
+PYTHON_EXEC = docker-compose exec $(SERVICE_NAME) python
 
 .PHONY: help
 help: ## ✨ Mostra esta ajuda.
@@ -42,16 +42,7 @@ logs: ## 📜 Mostra os logs dos contêineres em tempo real.
 
 .PHONY: shell
 shell: ## 💻 Acessa o terminal (shell) do contêiner da aplicação web.
-	@echo "💻 Acessando o shell do contêiner '$(SERVICE_NAME)'..."
-	docker-compose exec $(SERVICE_NAME) /bin/sh
-
-.PHONY: reset
-reset: ## 💥 NUCLEAR: Para tudo, apaga volumes, imagens e cache. Use com cuidado!
-	@echo "💥 Resetando completamente o ambiente Docker..."
-	docker-compose down -v
-	docker system prune -a --volumes -f
-
-##
+@@ -55,48 +55,48 @@ reset: ## 💥 NUCLEAR: Para tudo, apaga volumes, imagens e cache. Use com cuida
 ## 📦 Comandos do Django
 ##--------------------------------------------------
 .PHONY: migrate
@@ -77,12 +68,12 @@ collectstatic: ## 🎨 Coleta os arquivos estáticos para produção.
 .PHONY: test
 test: ## 🧪 Roda todos os testes com pytest.
 	@echo "🧪 Rodando testes com pytest..."
-	docker-compose exec $(SERVICE_NAME) poetry run pytest
+	docker-compose exec $(SERVICE_NAME) python -m pytest
 
 .PHONY: coverage
 coverage: ## 📊 Roda os testes e gera um relatório de cobertura de código.
 	@echo "📊 Gerando relatório de cobertura de testes..."
-	docker-compose exec $(SERVICE_NAME) poetry run pytest --cov=. --cov-report=html
+	docker-compose exec $(SERVICE_NAME) python -m pytest --cov=. --cov-report=html
 
 .PHONY: lint
 lint: format check ## 💅 Roda todas as verificações de formatação e qualidade.
@@ -90,13 +81,12 @@ lint: format check ## 💅 Roda todas as verificações de formatação e qualid
 .PHONY: format
 format: ## 🎨 Formata o código automaticamente com black e isort (DENTRO do contêiner).
 	@echo "🎨 Formatando o código com black e isort..."
-	docker-compose exec $(SERVICE_NAME) poetry run black .
-	docker-compose exec $(SERVICE_NAME) poetry run isort .
+	docker-compose exec $(SERVICE_NAME) python -m black .
+	docker-compose exec $(SERVICE_NAME) python -m isort .
 
 .PHONY: check
 check: ## 🧐 Verifica a formatação e a qualidade do código (DENTRO do contêiner).
 	@echo "🧐 Verificando a qualidade do código..."
-	docker-compose exec $(SERVICE_NAME) poetry run flake8 .
-	docker-compose exec $(SERVICE_NAME) poetry run black --check .
-	docker-compose exec $(SERVICE_NAME) poetry run isort --check .
-
+	docker-compose exec $(SERVICE_NAME) python -m flake8 .
+	docker-compose exec $(SERVICE_NAME) python -m black --check .
+	docker-compose exec $(SERVICE_NAME) python -m isort --check .

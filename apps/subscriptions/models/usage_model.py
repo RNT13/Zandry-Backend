@@ -1,4 +1,5 @@
 from django.db import models
+
 from common.models import BaseModel
 
 
@@ -10,17 +11,9 @@ class SubscriptionUsage(BaseModel):
         ("cancelled", "Cancelled"),
     )
 
-    company = models.OneToOneField(
-        "companies.Company",
-        on_delete=models.CASCADE,
-        related_name="subscription_usage"
-    )
+    company = models.OneToOneField("companies.Company", on_delete=models.CASCADE, related_name="subscription_usage")
 
-    plan = models.ForeignKey(
-        "subscriptions.SubscriptionPlan",
-        on_delete=models.PROTECT,
-        related_name="companies_usage"
-    )
+    plan = models.ForeignKey("subscriptions.SubscriptionPlan", on_delete=models.PROTECT, related_name="companies_usage")
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="trial")
 

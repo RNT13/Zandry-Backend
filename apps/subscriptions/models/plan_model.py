@@ -1,12 +1,13 @@
 from django.db import models
+
 from common.models import BaseModel
 
 
 class SubscriptionPlan(BaseModel):
     PLAN_CHOICES = (
-        ("trial",    "Trial"),
-        ("start",    "Start"),
-        ("pro",      "Pro"),
+        ("trial", "Trial"),
+        ("start", "Start"),
+        ("pro", "Pro"),
         ("business", "Business"),
     )
 

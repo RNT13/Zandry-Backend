@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from apps.companies.models import Company
-from apps.services.models import Service
 from apps.professionals.models import Professional
+from apps.services.models import Service
 
 
 class ServiceInline(admin.TabularInline):

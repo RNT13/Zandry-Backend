@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from apps.notifications.models.notification_preference_model import NotificationPreference
 
 

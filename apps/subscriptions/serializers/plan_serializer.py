@@ -1,6 +1,7 @@
 # apps/subscriptions/serializers.py
 
 from rest_framework import serializers
+
 from apps.subscriptions.models.plan_model import SubscriptionPlan
 
 
@@ -11,10 +12,19 @@ class SubscriptionPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubscriptionPlan
         fields = [
-            "id", "code", "name", "title", "subtitle", "description",
-            "recommended", "coming_soon",
-            "monthly_price", "price",
-            "trial_days", "features", "limits",
+            "id",
+            "code",
+            "name",
+            "title",
+            "subtitle",
+            "description",
+            "recommended",
+            "coming_soon",
+            "monthly_price",
+            "price",
+            "trial_days",
+            "features",
+            "limits",
             "sort_order",
         ]
 
@@ -26,11 +36,11 @@ class SubscriptionPlanSerializer(serializers.ModelSerializer):
 
     def get_limits(self, obj):
         return {
-            "max_professionals":  obj.max_professionals,
-            "max_services":       obj.max_services,
-            "max_appointments":   obj.max_appointments,
-            "allow_chat":         obj.allow_chat,
-            "allow_reports":      obj.allow_reports,
-            "allow_automation":   obj.allow_automation,
+            "max_professionals": obj.max_professionals,
+            "max_services": obj.max_services,
+            "max_appointments": obj.max_appointments,
+            "allow_chat": obj.allow_chat,
+            "allow_reports": obj.allow_reports,
+            "allow_automation": obj.allow_automation,
             "allow_full_dashboard": obj.allow_full_dashboard,
         }

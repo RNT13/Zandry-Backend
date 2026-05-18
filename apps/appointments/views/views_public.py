@@ -1,13 +1,10 @@
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema
 
-from apps.companies.models import Company
-from apps.services.models import Service
-from apps.professionals.models import Professional
 from apps.appointments.serializers.public_request_serializer import (
     PublicAvailabilityQuerySerializer,
     PublicCreateBookingSerializer,
@@ -18,14 +15,16 @@ from apps.appointments.serializers.public_response_serializer import (
 )
 from apps.appointments.services.public_availability_service import build_public_availability
 from apps.appointments.services.public_booking_service import create_public_booking
+from apps.companies.models import Company
+from apps.professionals.models import Professional
+from apps.services.models import Service
 
 
 class PublicAvailabilityView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
-        parameters=[PublicAvailabilityQuerySerializer],
-        responses={200: PublicAvailabilityResponseSerializer}
+        parameters=[PublicAvailabilityQuerySerializer], responses={200: PublicAvailabilityResponseSerializer}
     )
     def get(self, request, slug):
         company = get_object_or_404(Company, slug=slug, active=True)
@@ -56,10 +55,7 @@ class PublicAvailabilityView(APIView):
 class PublicCreateBookingView(APIView):
     permission_classes = [AllowAny]
 
-    @extend_schema(
-        request=PublicCreateBookingSerializer,
-        responses={201: PublicBookingResponseSerializer}
-    )
+    @extend_schema(request=PublicCreateBookingSerializer, responses={201: PublicBookingResponseSerializer})
     def post(self, request):
         serializer = PublicCreateBookingSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

@@ -3,16 +3,15 @@ from datetime import timedelta
 from django.db import transaction
 from django.utils import timezone
 from django.utils.text import slugify
-
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.exceptions import ValidationError
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.accounts.models import User
 from apps.companies.models import Company
-from apps.subscriptions.models import SubscriptionPlan, SubscriptionUsage
-from apps.services.models import Service
-from apps.professionals.models import Professional
 from apps.companies.models.business_hours_model import BusinessHour
+from apps.professionals.models import Professional
+from apps.services.models import Service
+from apps.subscriptions.models import SubscriptionPlan, SubscriptionUsage
 
 
 def generate_unique_slug(company_name: str) -> str:
@@ -62,7 +61,7 @@ def register_company_service(validated_data: dict) -> dict:
     # ------------------------------------------------------------------
     company_name = company_data["company_name"]
     company_email = company_data["email"]
-    company_phone = company_data["phone"]
+    # company_phone = company_data["phone"]
 
     # ------------------------------------------------------------------
     # Validações de unicidade

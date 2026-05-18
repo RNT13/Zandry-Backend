@@ -1,5 +1,5 @@
-from rest_framework import generics, permissions
 from drf_spectacular.utils import extend_schema
+from rest_framework import generics, permissions
 
 from apps.clients.models import Client
 from apps.clients.serializers.public_response_serializer import PublicClientResponseSerializer

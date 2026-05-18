@@ -1,5 +1,5 @@
-from rest_framework import generics, permissions
 from drf_spectacular.utils import extend_schema
+from rest_framework import generics, permissions
 
 from apps.subscriptions.models.plan_model import SubscriptionPlan
 from apps.subscriptions.serializers.plan_response_serializer import SubscriptionPlanReadSerializer

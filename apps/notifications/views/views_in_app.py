@@ -1,13 +1,13 @@
-from rest_framework import generics, permissions
+from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
+from rest_framework import generics, permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.notifications.models.notification_delivery_model import NotificationDelivery
 from apps.notifications.serializers.notification_read_serializer import NotificationDeliveryReadSerializer
 from apps.notifications.serializers.notification_write_serializer import NotificationMarkAsReadSerializer
 from apps.notifications.services.mark_as_read_service import mark_delivery_as_read
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 
 class MyNotificationListView(generics.ListAPIView):
@@ -18,8 +18,7 @@ class MyNotificationListView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return (
-            NotificationDelivery.objects
-            .select_related("notification", "user")
+            NotificationDelivery.objects.select_related("notification", "user")
             .filter(user=user)
             .order_by("-created_at")
         )

@@ -1,7 +1,8 @@
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from common.models import BaseModel
 from rest_framework.exceptions import ValidationError
+
+from common.models import BaseModel
 
 
 class UserManager(BaseUserManager):
@@ -11,11 +12,7 @@ class UserManager(BaseUserManager):
 
         email = self.normalize_email(email)
 
-        user = self.model(
-            email=email,
-            full_name=full_name,
-            **extra_fields
-        )
+        user = self.model(email=email, full_name=full_name, **extra_fields)
 
         user.set_password(password)
         user.save(using=self._db)
@@ -36,11 +33,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     )
 
     company = models.ForeignKey(
-        "companies.Company",
-        on_delete=models.CASCADE,
-        related_name="users",
-        null=True,
-        blank=True
+        "companies.Company", on_delete=models.CASCADE, related_name="users", null=True, blank=True
     )
 
     full_name = models.CharField(max_length=255)

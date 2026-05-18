@@ -1,4 +1,5 @@
 from django.db import models
+
 from common.models import BaseTenantModel
 
 
@@ -19,8 +20,9 @@ class Appointment(BaseTenantModel):
     )
 
     service = models.ForeignKey("services.Service", on_delete=models.CASCADE, related_name="appointments")
-    professional = models.ForeignKey("professionals.Professional",
-                                     on_delete=models.CASCADE, related_name="appointments")
+    professional = models.ForeignKey(
+        "professionals.Professional", on_delete=models.CASCADE, related_name="appointments"
+    )
 
     date = models.DateField()
     time = models.TimeField()

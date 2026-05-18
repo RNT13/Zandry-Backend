@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from apps.companies.models import Company, BusinessHour
+
+from apps.companies.models import BusinessHour, Company
 
 
 class BusinessHourReadSerializer(serializers.ModelSerializer):

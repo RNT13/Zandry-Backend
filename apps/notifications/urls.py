@@ -1,6 +1,7 @@
 from django.urls import path
-from apps.notifications.views.views_in_app import MyNotificationListView, MarkNotificationAsReadView
+
 from apps.notifications.views.views_dashboard import MyNotificationPreferenceView
+from apps.notifications.views.views_in_app import MarkNotificationAsReadView, MyNotificationListView
 
 urlpatterns = [
     path("inbox/", MyNotificationListView.as_view(), name="notification-inbox"),

@@ -33,15 +33,17 @@ class AuthAddressRegisterSerializer(serializers.Serializer):
 
 
 class AuthBusinessHourRegisterSerializer(serializers.Serializer):
-    week_day = serializers.ChoiceField(choices=[
-        ("monday", "Monday"),
-        ("tuesday", "Tuesday"),
-        ("wednesday", "Wednesday"),
-        ("thursday", "Thursday"),
-        ("friday", "Friday"),
-        ("saturday", "Saturday"),
-        ("sunday", "Sunday"),
-    ])
+    week_day = serializers.ChoiceField(
+        choices=[
+            ("monday", "Monday"),
+            ("tuesday", "Tuesday"),
+            ("wednesday", "Wednesday"),
+            ("thursday", "Thursday"),
+            ("friday", "Friday"),
+            ("saturday", "Saturday"),
+            ("sunday", "Sunday"),
+        ]
+    )
     start = serializers.CharField(max_length=5, required=False, allow_blank=True)
     end = serializers.CharField(max_length=5, required=False, allow_blank=True)
     is_open = serializers.BooleanField(required=False, default=False)

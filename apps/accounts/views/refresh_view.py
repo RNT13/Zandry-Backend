@@ -1,15 +1,12 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenRefreshView
-from drf_spectacular.utils import extend_schema
 
 from apps.accounts.serializers.auth_response_serializer import RefreshResponseSerializer
 
 
 class CookieTokenRefreshView(TokenRefreshView):
-    @extend_schema(
-        request=None,
-        responses={200: RefreshResponseSerializer}
-    )
+    @extend_schema(request=None, responses={200: RefreshResponseSerializer})
     def post(self, request, *args, **kwargs):
         refresh = request.COOKIES.get("refresh_token")
         if not refresh:

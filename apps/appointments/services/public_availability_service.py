@@ -1,4 +1,5 @@
-from datetime import date as date_cls, timedelta
+from datetime import date as date_cls
+from datetime import timedelta
 
 from apps.appointments.models import Appointment
 from apps.appointments.utils import generate_slots
@@ -32,10 +33,7 @@ def build_public_availability(company, professional, service, start_day=None):
         status__in=["pending", "confirmed"],
     ).values_list("date", "time")
 
-    booked_set = {
-        (d if isinstance(d, date_cls) else d.date(), t.strftime("%H:%M"))
-        for d, t in booked_raw
-    }
+    booked_set = {(d if isinstance(d, date_cls) else d.date(), t.strftime("%H:%M")) for d, t in booked_raw}
 
     days = []
 
@@ -46,13 +44,15 @@ def build_public_availability(company, professional, service, start_day=None):
         bh = company.business_hours.filter(week_day=weekday_key, is_open=True).first()
 
         if not bh or not bh.start or not bh.end:
-            days.append({
-                "date": current_day,
-                "label": current_day.strftime("%d/%m"),
-                "weekday": weekday_key,
-                "is_open": False,
-                "slots": [],
-            })
+            days.append(
+                {
+                    "date": current_day,
+                    "label": current_day.strftime("%d/%m"),
+                    "weekday": weekday_key,
+                    "is_open": False,
+                    "slots": [],
+                }
+            )
             continue
 
         all_times = generate_slots(bh.start, bh.end, interval_minutes=SLOT_INTERVAL)
@@ -69,18 +69,22 @@ def build_public_availability(company, professional, service, start_day=None):
 
             available = not directly_booked and fits_in_window and not future_slots_blocked
 
-            slots.append({
-                "date": current_day,
-                "time": time_str,
-                "available": available,
-            })
+            slots.append(
+                {
+                    "date": current_day,
+                    "time": time_str,
+                    "available": available,
+                }
+            )
 
-        days.append({
-            "date": current_day,
-            "label": current_day.strftime("%d/%m"),
-            "weekday": weekday_key,
-            "is_open": True,
-            "slots": slots,
-        })
+        days.append(
+            {
+                "date": current_day,
+                "label": current_day.strftime("%d/%m"),
+                "weekday": weekday_key,
+                "is_open": True,
+                "slots": slots,
+            }
+        )
 
     return {"days": days}

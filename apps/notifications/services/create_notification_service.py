@@ -1,6 +1,7 @@
 from django.db import transaction
-from apps.notifications.models.notification_model import Notification
+
 from apps.notifications.models.notification_delivery_model import NotificationDelivery
+from apps.notifications.models.notification_model import Notification
 
 
 @transaction.atomic

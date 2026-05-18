@@ -1,4 +1,5 @@
 from django.db import models
+
 from common.models import BaseTenantModel
 
 
@@ -7,19 +8,11 @@ class Professional(BaseTenantModel):
     position = models.CharField(max_length=150)
     rating = models.DecimalField(max_digits=3, decimal_places=1, default=5.0)
 
-    avatar = models.ImageField(
-        upload_to="professionals/avatars/",
-        blank=True,
-        null=True
-    )
+    avatar = models.ImageField(upload_to="professionals/avatars/", blank=True, null=True)
 
     phone = models.CharField(max_length=20, blank=True)
 
-    services = models.ManyToManyField(
-        "services.Service",
-        related_name="professionals",
-        blank=True
-    )
+    services = models.ManyToManyField("services.Service", related_name="professionals", blank=True)
 
     class Meta:
         db_table = "professionals"

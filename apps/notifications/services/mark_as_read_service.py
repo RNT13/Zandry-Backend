@@ -1,4 +1,5 @@
 from django.utils import timezone
+
 from apps.notifications.models.notification_delivery_model import NotificationDelivery
 
 

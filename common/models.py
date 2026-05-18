@@ -1,4 +1,5 @@
 import uuid
+
 from django.db import models
 
 
@@ -13,11 +14,7 @@ class BaseModel(models.Model):
 
 
 class BaseTenantModel(BaseModel):
-    company = models.ForeignKey(
-        "companies.Company",
-        on_delete=models.CASCADE,
-        related_name="%(class)ss"
-    )
+    company = models.ForeignKey("companies.Company", on_delete=models.CASCADE, related_name="%(class)ss")
 
     class Meta:
         abstract = True
