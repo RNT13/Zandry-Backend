@@ -1,5 +1,6 @@
 from .output import (
     DashboardAppointmentsSerializer,
+    DashboardDailyPointSerializer,
     DashboardRevenueSerializer,
     DashboardSummarySerializer,
     DashboardTotalsSerializer,
@@ -10,4 +11,5 @@ __all__ = [
     "DashboardRevenueSerializer",
     "DashboardSummarySerializer",
     "DashboardTotalsSerializer",
+    "DashboardDailyPointSerializer",
 ]

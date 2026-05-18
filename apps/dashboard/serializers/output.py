@@ -22,7 +22,14 @@ class DashboardRevenueSerializer(serializers.Serializer):
     completed_amount = serializers.DecimalField(max_digits=12, decimal_places=2)
 
 
+class DashboardDailyPointSerializer(serializers.Serializer):
+    date = serializers.DateField()
+    total = serializers.IntegerField()
+
+
 class DashboardSummarySerializer(serializers.Serializer):
+    period_days = serializers.IntegerField()
     totals = DashboardTotalsSerializer()
     appointments = DashboardAppointmentsSerializer()
     revenue = DashboardRevenueSerializer()
+    recent_daily = DashboardDailyPointSerializer(many=True)

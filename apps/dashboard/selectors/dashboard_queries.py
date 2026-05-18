@@ -8,9 +8,11 @@ from apps.professionals.models import Professional
 from apps.services.models import Service
 
 
-def get_dashboard_summary(*, company):
+def get_dashboard_summary(*, company, period_days=7):
     today = date.today()
     tomorrow = today + timedelta(days=1)
+    period_days = max(1, min(int(period_days), 90))
+    period_start = today - timedelta(days=period_days - 1)
 
     base_appointments = Appointment.objects.filter(company=company, active=True)
 
@@ -18,9 +20,22 @@ def get_dashboard_summary(*, company):
         row["status"]: row["total"] for row in base_appointments.values("status").annotate(total=Count("id"))
     }
 
-    today_appointments = base_appointments.filter(date=today)
+    recent_daily_map = {
+        row["date"]: row["total"]
+        for row in base_appointments.filter(date__gte=period_start, date__lte=today)
+        .values("date")
+        .annotate(total=Count("id"))
+    }
+    recent_daily = [
+        {
+            "date": period_start + timedelta(days=idx),
+            "total": recent_daily_map.get(period_start + timedelta(days=idx), 0),
+        }
+        for idx in range(period_days)
+    ]
 
     return {
+        "period_days": period_days,
         "totals": {
             "clients": Client.objects.filter(company=company, active=True).count(),
             "professionals": Professional.objects.filter(company=company, active=True).count(),
@@ -28,7 +43,7 @@ def get_dashboard_summary(*, company):
             "appointments": base_appointments.count(),
         },
         "appointments": {
-            "today": today_appointments.count(),
+            "today": base_appointments.filter(date=today).count(),
             "tomorrow": base_appointments.filter(date=tomorrow).count(),
             "pending": status_counts.get("pending", 0),
             "confirmed": status_counts.get("confirmed", 0),
@@ -41,4 +56,5 @@ def get_dashboard_summary(*, company):
                 base_appointments.filter(status="completed").aggregate(total=Sum("service__price"))["total"] or 0
             ),
         },
+        "recent_daily": recent_daily,
     }
