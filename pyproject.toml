@@ -9,7 +9,7 @@ package-mode = false
 
 # Dependências principais do projeto
 [tool.poetry.dependencies]
-python = ">=3.13"
+python = "^3.12"
 django = ">=5.2.7,<6.0.0"
 djangorestframework = ">=3.16.1,<4.0.0"
 psycopg2-binary = ">=2.9.11,<3.0.0"
@@ -20,6 +20,12 @@ whitenoise = ">=6.11.0,<7.0.0"
 
 # Dependências de desenvolvimento
 python-dotenv = "^1.2.1"
+drf-spectacular = "^0.29.0"
+django-filter = "^25.2"
+django-cors-headers = "^4.9.0"
+python-decouple = "^3.8"
+pillow = "^12.2.0"
+djangorestframework-simplejwt = "^5.5.1"
 [tool.poetry.group.dev.dependencies]
 black = ">=24.0.0,<25.0.0"
 isort = ">=5.0.0,<6.0.0"
@@ -44,6 +50,6 @@ profile = "black"
 line_length = 120
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "core.settings"
+DJANGO_SETTINGS_MODULE = "config.settings"
 python_files = "tests.py test_*.py *_tests.py"
 pythonpath = "."
