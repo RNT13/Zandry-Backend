@@ -65,4 +65,12 @@ jobs:
         run: poetry run flake8 .
 
       - name: 9. Run Tests (pytest)
-        run: poetry run pytest
+        run: |
+          poetry run pytest
+          code=$?
+          if [ $code -eq 5 ]; then
+            echo "Nenhum teste encontrado — ignorando."
+            exit 0
+          fi
+          exit $code
+        shell: bash

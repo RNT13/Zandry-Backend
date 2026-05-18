@@ -60,3 +60,5 @@ skip = [".venv", "venv", "migrations", "build", "dist", "staticfiles"]
 DJANGO_SETTINGS_MODULE = "config.settings"
 python_files = "tests.py test_*.py *_tests.py"
 pythonpath = "."
+addopts = "--no-header"
+

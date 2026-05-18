@@ -1,3 +1,3 @@
-from .public_response_serializer import Professional, PublicProfessionalBriefSerializer
+from .public_response_serializer import PublicProfessionalBriefSerializer
 
-__all__ = ["Professional", "PublicProfessionalBriefSerializer"]
+__all__ = ["PublicProfessionalBriefSerializer"]

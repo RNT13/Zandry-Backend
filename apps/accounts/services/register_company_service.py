@@ -61,7 +61,6 @@ def register_company_service(validated_data: dict) -> dict:
     # ------------------------------------------------------------------
     company_name = company_data["company_name"]
     company_email = company_data["email"]
-    # company_phone = company_data["phone"]
 
     # ------------------------------------------------------------------
     # Validações de unicidade

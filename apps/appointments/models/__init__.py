@@ -1,3 +1,3 @@
-from .appointment_model import Appointment, BaseTenantModel
+from .appointment_model import Appointment
 
-__all__ = ["Appointment", "BaseTenantModel"]
+__all__ = ["Appointment"]

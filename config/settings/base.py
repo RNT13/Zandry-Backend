@@ -11,7 +11,7 @@ DEBUG = False
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "https://zandry.vercel.app/"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "https://zandry.vercel.app"]
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
 ]
