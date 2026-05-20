@@ -90,3 +90,15 @@ check: ## 🧐 Verifica a formatação e a qualidade do código (DENTRO do cont�
 	docker-compose exec $(SERVICE_NAME) python -m flake8 .
 	docker-compose exec $(SERVICE_NAME) python -m black --check .
 	docker-compose exec $(SERVICE_NAME) python -m isort --check .
+
+##
+## 🌱 Dados Iniciais
+##--------------------------------------------------
+.PHONY: seed
+seed: ## 🌱 Popula o banco com os planos de assinatura.
+	@echo "🌱 Rodando seed de planos..."
+	docker-compose exec $(SERVICE_NAME) python manage.py seed_plans
+
+
+.PHONY: setup
+setup: migrate seed ## ⚙️ Configura o ambiente: migra o banco e popula os dados iniciais.

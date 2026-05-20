@@ -4,7 +4,11 @@ from rest_framework import serializers
 class PublicSlotResponseSerializer(serializers.Serializer):
     date = serializers.DateField()
     time = serializers.CharField()
+    ends_at = serializers.CharField(required=False, allow_blank=True)
     available = serializers.BooleanField()
+    free = serializers.BooleanField()
+    busy = serializers.BooleanField()
+    conflict = serializers.BooleanField()
 
 
 class PublicDayAvailabilityResponseSerializer(serializers.Serializer):

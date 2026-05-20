@@ -1,18 +1,19 @@
-from datetime import datetime, timedelta
+from __future__ import annotations
+
+from datetime import datetime
 
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 from apps.appointments.models import Appointment
-from apps.appointments.services.public_availability_service import slots_needed
+from apps.appointments.services.public_availability_service import validate_public_booking_slot
 from apps.clients.services.upsert_client_service import upsert_public_client
 from apps.companies.models import Company
 from apps.notifications.services.booking_notifications_service import notify_booking_created
 from apps.professionals.models import Professional
 from apps.services.models import Service
-
-SLOT_INTERVAL = 15
 
 
 @transaction.atomic
@@ -27,6 +28,25 @@ def create_public_booking(validated_data: dict) -> dict:
         services=service,
     )
 
+    booking_date = validated_data["date"]
+    booking_time = validated_data["time"]
+
+    booking_dt = timezone.make_aware(
+        datetime.combine(booking_date, booking_time),
+        timezone.get_current_timezone(),
+    )
+
+    if booking_dt <= timezone.now():
+        raise ValidationError({"time": "Esse horário já passou."})
+
+    validate_public_booking_slot(
+        company=company,
+        service=service,
+        professional=professional,
+        booking_date=booking_date,
+        booking_time=booking_time,
+    )
+
     client = upsert_public_client(
         company,
         {
@@ -36,53 +56,18 @@ def create_public_booking(validated_data: dict) -> dict:
         },
     )
 
-    n_slots = slots_needed(service.duration)
-    start_time_str = validated_data["time"].strftime("%H:%M")
-
-    occupied_times = []
-    for offset in range(n_slots):
-        dt = datetime.strptime(start_time_str, "%H:%M") + timedelta(minutes=offset * SLOT_INTERVAL)
-        occupied_times.append(dt.strftime("%H:%M"))
-
-    conflict = Appointment.objects.filter(
-        professional=professional,
-        date=validated_data["date"],
-        time__in=[datetime.strptime(t, "%H:%M").time() for t in occupied_times],
-        status__in=["pending", "confirmed"],
-    ).exists()
-
-    if conflict:
-        raise ValidationError({"time": "Este horário já está reservado. Escolha outro."})
-
     appointment = Appointment.objects.create(
         company=company,
         client=client,
         service=service,
         professional=professional,
-        date=validated_data["date"],
-        time=validated_data["time"],
+        date=booking_date,
+        time=booking_time,
         user_name=validated_data["user_name"],
         user_phone=validated_data["user_phone"],
         user_email=validated_data.get("user_email", ""),
         status="pending",
     )
-
-    for time_str in occupied_times[1:]:
-        Appointment.objects.get_or_create(
-            professional=professional,
-            date=validated_data["date"],
-            time=datetime.strptime(time_str, "%H:%M").time(),
-            defaults={
-                "company": company,
-                "client": client,
-                "service": service,
-                "professional": professional,
-                "user_name": f"[bloqueado] {validated_data['user_name']}",
-                "user_phone": validated_data["user_phone"],
-                "user_email": "",
-                "status": "confirmed",
-            },
-        )
 
     notify_booking_created(
         appointment=appointment,

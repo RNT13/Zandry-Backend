@@ -24,7 +24,8 @@ class PublicAvailabilityView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
-        parameters=[PublicAvailabilityQuerySerializer], responses={200: PublicAvailabilityResponseSerializer}
+        parameters=[PublicAvailabilityQuerySerializer],
+        responses={200: PublicAvailabilityResponseSerializer},
     )
     def get(self, request, slug):
         company = get_object_or_404(Company, slug=slug, active=True)
@@ -46,7 +47,7 @@ class PublicAvailabilityView(APIView):
             company=company,
             professional=professional,
             service=service,
-            start_day=params.get("date"),
+            date=params.get("date"),
         )
 
         return Response(data, status=status.HTTP_200_OK)

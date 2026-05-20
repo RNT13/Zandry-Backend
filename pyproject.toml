@@ -8,7 +8,7 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
-django = ">=5.2.7,<6.0.0"
+django = "^5.2.1"
 djangorestframework = ">=3.16.1,<4.0.0"
 psycopg2-binary = ">=2.9.11,<3.0.0"
 django-extensions = ">=4.1,<5.0"

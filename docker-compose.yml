@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:16-alpine
+    platform: linux/amd64
     container_name: zandry_postgres
     restart: always
     ports:

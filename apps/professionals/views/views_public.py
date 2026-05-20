@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.companies.models import Company
-from apps.professionals.models import Professional
 from apps.professionals.serializers.public_response_serializer import PublicProfessionalBriefSerializer
 from apps.services.models import Service
 
@@ -18,12 +17,7 @@ class PublicCompanyServiceProfessionalsView(APIView):
         company = get_object_or_404(Company, slug=slug, active=True)
         service = get_object_or_404(Service, id=service_uid, company=company, active=True)
 
-        professionals = (
-            Professional.objects.filter(company=company, active=True, services=service)
-            .prefetch_related("services")
-            .distinct()
-            .order_by("full_name")
-        )
+        professionals = service.professionals.filter(active=True).order_by("full_name")
 
         serializer = PublicProfessionalBriefSerializer(professionals, many=True, context={"request": request})
         return Response(serializer.data)
