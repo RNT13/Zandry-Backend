@@ -1,4 +1,4 @@
-# Makefile para o Projeto BackendTemplate
+# Makefile para o Projeto Django
 # -----------------------------------------
 # Este Makefile simplifica a interação com o ambiente Docker e Django.
 #
@@ -98,6 +98,11 @@ check: ## 🧐 Verifica a formatação e a qualidade do código (DENTRO do cont�
 seed: ## 🌱 Popula o banco com os planos de assinatura.
 	@echo "🌱 Rodando seed de planos..."
 	docker-compose exec $(SERVICE_NAME) python manage.py seed_plans
+
+.PHONY: seed-prod
+seed-prod: ## 🌱 Roda seed de planos no ambiente de produção via SSH.
+	@echo "🌱 Rodando seed em produção..."
+	ssh usuario@seu-servidor "cd /app && docker-compose -f docker-compose.prod.yml exec web python manage.py seed_plans"
 
 
 .PHONY: setup
