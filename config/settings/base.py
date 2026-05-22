@@ -2,19 +2,12 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+import dj_database_url
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-dev-secret-key")
-
-DEBUG = False
-
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "https://zandry.vercel.app"]
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -70,16 +63,24 @@ TEMPLATES = [
     },
 ]
 
-DATABASES = {
-    "default": {
-        "ENGINE": os.getenv("SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.getenv("SQL_DATABASE"),
-        "USER": os.getenv("SQL_USER"),
-        "PASSWORD": os.getenv("SQL_PASSWORD"),
-        "HOST": os.getenv("SQL_HOST"),
-        "PORT": os.getenv("SQL_PORT"),
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+        )
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
+AUTH_USER_MODEL = "accounts.User"
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -87,8 +88,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
-
-AUTH_USER_MODEL = "accounts.User"
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=2),
@@ -116,18 +115,19 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Zandry API",
     "DESCRIPTION": "Backend API do SaaS Zandry",
     "VERSION": "1.0.0",
-    # Gera componentes separados para request/response e evita tipos TS ambíguos no codegen.
     "COMPONENT_SPLIT_REQUEST": True,
-    # Expõe operationId previsível para o @rtk-query/codegen-openapi.
     "OPERATION_ID_METHOD_POSITION": "POST",
-    # Evita enums anônimos e melhora nomes de tipos gerados no frontend.
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "SORT_OPERATION_PARAMETERS": True,
 }
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
