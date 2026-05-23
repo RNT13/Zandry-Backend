@@ -6,7 +6,7 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", ".up.railway.app").split(",")
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", ".up.railway.app").split()
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "https://zandry.vercel.app")
 BACKEND_URL = os.getenv("BACKEND_URL", "https://zandry-backend-production.up.railway.app")
