@@ -112,6 +112,11 @@ seed-prod: ## 🌱 Roda seed no banco de produção
 shell-prod: ## 🐍 Abre shell Django apontando para produção
 	cmd /C "set DATABASE_URL=$(PROD_DATABASE_URL)&& set DJANGO_SETTINGS_MODULE=config.settings.prod&& poetry run python manage.py shell"
 
+.PHONY: superuser-prod
+superuser-prod: ## 👤 Cria um novo superusuário.
+	@echo "👤 Criando um novo superusuário..."
+	cmd /C "set DATABASE_URL=$(PROD_DATABASE_URL)&& set DJANGO_SETTINGS_MODULE=config.settings.prod&& poetry run python manage.py createsuperuser"
+
 
 .PHONY: setup
 setup: migrate seed ## ⚙️ Configura o ambiente: migra o banco e popula os dados iniciais.
