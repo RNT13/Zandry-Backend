@@ -13,6 +13,10 @@
 
 # --- Configurações ---
 # Define o nome do serviço 'web' no docker-compose.yml para ser usado nos comandos.
+-include .env
+-include .env.prod
+export
+
 SERVICE_NAME = web
 # Define o comando base para executar comandos Python dentro do contêiner.
 # Usamos 'poetry run' para garantir que o ambiente virtual correto seja usado.
@@ -100,9 +104,13 @@ seed: ## 🌱 Popula o banco com os planos de assinatura.
 	docker-compose exec $(SERVICE_NAME) python manage.py seed_plans
 
 .PHONY: seed-prod
-seed-prod: ## 🌱 Roda seed de planos no ambiente de produção via SSH.
+seed-prod: ## 🌱 Roda seed no banco de produção
 	@echo "🌱 Rodando seed em produção..."
-	ssh usuario@seu-servidor "cd /app && docker-compose -f docker-compose.prod.yml exec web python manage.py seed_plans"
+	cmd /C "set DATABASE_URL=$(PROD_DATABASE_URL)&& set DJANGO_SETTINGS_MODULE=config.settings.prod&& poetry run python manage.py seed_plans"
+
+.PHONY: shell-prod
+shell-prod: ## 🐍 Abre shell Django apontando para produção
+	cmd /C "set DATABASE_URL=$(PROD_DATABASE_URL)&& set DJANGO_SETTINGS_MODULE=config.settings.prod&& poetry run python manage.py shell"
 
 
 .PHONY: setup
