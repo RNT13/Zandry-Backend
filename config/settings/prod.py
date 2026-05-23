@@ -6,15 +6,12 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = os.getenv(
-    "DJANGO_ALLOWED_HOSTS",
-    ".up.railway.app"
-).split()
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", ".up.railway.app").split()
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "https://zandry.vercel.app")
 
-CORS_ALLOWED_ORIGINS = [FRONTEND_URL]
-CSRF_TRUSTED_ORIGINS = [FRONTEND_URL]
+CORS_ALLOWED_ORIGINS = [FRONTEND_URL] if FRONTEND_URL else []
+CSRF_TRUSTED_ORIGINS = [FRONTEND_URL] if FRONTEND_URL else []
 
 DATABASES = {
     "default": dj_database_url.config(
