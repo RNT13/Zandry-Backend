@@ -58,7 +58,11 @@ def _get_weekday_code(day_date: date_cls) -> str:
 
 
 def _get_business_hour(company: Company, weekday_code: str) -> BusinessHour | None:
-    return BusinessHour.objects.filter(company=company, week_day=weekday_code, is_open=True).first()
+    return BusinessHour.objects.filter(
+        company=company,
+        week_day=weekday_code,
+        is_open=True,
+    ).first()
 
 
 def _intervals_overlap(start_a: int, end_a: int, start_b: int, end_b: int) -> bool:
@@ -192,9 +196,13 @@ def validate_public_booking_slot(
     if not business_hour or not business_hour.start or not business_hour.end:
         raise ValidationError({"time": "A empresa não atende neste dia."})
 
+    duration_min = int(service.duration)
+    if duration_min <= 0:
+        raise ValidationError({"time": "Duração de serviço inválida."})
+
     business_start = _parse_hhmm(business_hour.start)
     business_end = _parse_hhmm(business_hour.end)
-    end_min = start_min + int(service.duration)
+    end_min = start_min + duration_min
 
     if start_min < business_start:
         raise ValidationError({"time": "Esse horário começa antes do funcionamento da empresa."})
@@ -215,16 +223,9 @@ def _build_slot_status(
     start_min: int,
     blocked_intervals: list[tuple[int, int]],
 ) -> SlotStatus:
-    """
-    Um slot individual (de SLOT_STEP_MINUTES) é marcado como 'busy' se
-    algum agendamento existente sobrepõe seu intervalo de 15 minutos.
-    O campo `available` no slot reflete se ele pode ser o *início* de um
-    novo serviço — isso é calculado pelo front usando `ends_at` + os status
-    dos slots dentro do intervalo do serviço.
-    """
     slot_end = start_min + SLOT_STEP_MINUTES
-    is_busy = _slot_conflicts_with_bookings(start_min, slot_end, blocked_intervals)
-    return "busy" if is_busy else "free"
+    slot_busy = _slot_conflicts_with_bookings(start_min, slot_end, blocked_intervals)
+    return "busy" if slot_busy else "free"
 
 
 def _build_day_slots(
@@ -262,11 +263,6 @@ def _build_day_slots(
     blocked_intervals = _build_blocked_intervals(company, day_date, professional)
 
     slots: list[dict] = []
-
-    # Itera todos os slots de 15 min dentro do horário de funcionamento.
-    # Um slot só aparece se NÃO for passado.
-    # `available` = pode ser o início de um novo agendamento (o serviço completo cabe
-    # dentro do horário e não colide com nenhum bloqueio).
     current_start = business_start_min
 
     while current_start < business_end_min:
@@ -277,17 +273,23 @@ def _build_day_slots(
         slot_end_if_service = current_start + duration_min
         ends_at = _format_hhmm(slot_end_if_service)
 
-        # O slot pode ser início de agendamento somente se o serviço couber
-        # dentro do horário de funcionamento e não colidir com reservas.
-        fits_in_business = slot_end_if_service <= business_end_min
-        no_conflict = not _slot_conflicts_with_bookings(current_start, slot_end_if_service, blocked_intervals)
-        available = fits_in_business and no_conflict
-
-        # Status do slot em si (se está fisicamente ocupado por outro agendamento).
-        status = _build_slot_status(
-            start_min=current_start,
-            blocked_intervals=blocked_intervals,
+        slot_busy = (
+            _build_slot_status(
+                start_min=current_start,
+                blocked_intervals=blocked_intervals,
+            )
+            == "busy"
         )
+
+        fits_in_business = slot_end_if_service <= business_end_min
+        no_conflict = not _slot_conflicts_with_bookings(
+            current_start,
+            slot_end_if_service,
+            blocked_intervals,
+        )
+
+        available = fits_in_business and no_conflict
+        conflict = (not available) and not slot_busy
 
         slots.append(
             {
@@ -295,7 +297,9 @@ def _build_day_slots(
                 "time": _format_hhmm(current_start),
                 "ends_at": ends_at,
                 "available": available,
-                "status": status,
+                "free": not slot_busy,
+                "busy": slot_busy,
+                "conflict": conflict,
             }
         )
 
