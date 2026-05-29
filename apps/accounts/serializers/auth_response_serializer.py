@@ -35,4 +35,3 @@ class RegisterCompanyResponseSerializer(serializers.Serializer):
     company_id = serializers.CharField()
     company_slug = serializers.CharField()
     access = serializers.CharField()
-    refresh = serializers.CharField()

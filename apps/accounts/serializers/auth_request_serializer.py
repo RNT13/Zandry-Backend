@@ -21,7 +21,7 @@ class AuthCompanyRegisterSerializer(serializers.Serializer):
     email = serializers.EmailField()
     phone = serializers.CharField(max_length=20)
     category = serializers.CharField(max_length=100)
-    description = serializers.CharField()
+    description = serializers.CharField(required=False, allow_blank=True, default="")
 
 
 class AuthAddressRegisterSerializer(serializers.Serializer):

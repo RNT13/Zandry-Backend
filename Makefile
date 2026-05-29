@@ -49,6 +49,7 @@ shell: ## 💻 Acessa o terminal (shell) do contêiner da aplicação web.
 @@ -55,48 +55,48 @@ reset: ## 💥 NUCLEAR: Para tudo, apaga volumes, imagens e cache. Use com cuida
 ## 📦 Comandos do Django
 ##--------------------------------------------------
+
 .PHONY: migrate
 migrate: ## 🏃 Executa as migrações do banco de dados (makemigrations e migrate).
 	@echo "🔍 Gerando arquivos de migração..."
@@ -65,6 +66,12 @@ superuser: ## 👤 Cria um novo superusuário.
 collectstatic: ## 🎨 Coleta os arquivos estáticos para produção.
 	@echo "🎨 Coletando arquivos estáticos..."
 	docker-compose exec $(SERVICE_NAME) python manage.py collectstatic --noinput
+
+.PHONY: reset
+reset: ## 💥 NUCLEAR: Para tudo, apaga volumes, imagens e cache. Use com cuidado!
+	@echo "💥 Resetando tudo..."
+	docker-compose down -v --rmi all --remove-orphans
+	docker system prune -f
 
 ##
 ## ✅ Qualidade de Código e Testes
