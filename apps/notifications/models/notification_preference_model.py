@@ -38,6 +38,7 @@ class NotificationPreference(BaseTenantModel):
 
     allow_in_app = models.BooleanField(default=True)
     allow_whatsapp = models.BooleanField(default=True)
+    allow_email = models.BooleanField(default=True)
 
     booking_created = models.BooleanField(default=True)
     booking_confirmed = models.BooleanField(default=True)

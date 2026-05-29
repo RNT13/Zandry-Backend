@@ -45,10 +45,14 @@ logs: ## 📜 Mostra os logs dos contêineres em tempo real.
 	docker-compose logs -f
 
 .PHONY: shell
-shell: ## 💻 Acessa o terminal (shell) do contêiner da aplicação web.
-@@ -55,48 +55,48 @@ reset: ## 💥 NUCLEAR: Para tudo, apaga volumes, imagens e cache. Use com cuida
-## 📦 Comandos do Django
-##--------------------------------------------------
+shell: ## 🐍 Abre o Django shell dentro do container
+	@echo "🐍 Abrindo Django shell..."
+	docker-compose exec $(SERVICE_NAME) python manage.py shell
+
+.PHONY: bash
+bash: ## 💻 Acessa o terminal do container web
+	@echo "💻 Entrando no container..."
+	docker-compose exec $(SERVICE_NAME) bash
 
 .PHONY: migrate
 migrate: ## 🏃 Executa as migrações do banco de dados (makemigrations e migrate).

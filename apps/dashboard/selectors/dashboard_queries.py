@@ -1,6 +1,7 @@
-from datetime import date, timedelta
+from datetime import timedelta
 
 from django.db.models import Count, Sum
+from django.utils import timezone
 
 from apps.appointments.models import Appointment
 from apps.clients.models import Client
@@ -8,16 +9,18 @@ from apps.professionals.models import Professional
 from apps.services.models import Service
 
 
-def get_dashboard_summary(*, company, period_days=7):
-    today = date.today()
+def get_dashboard_summary(*, company, period_days: int = 7) -> dict:
+    today = timezone.localdate()
     tomorrow = today + timedelta(days=1)
+
     period_days = max(1, min(int(period_days), 90))
     period_start = today - timedelta(days=period_days - 1)
 
     base_appointments = Appointment.objects.filter(company=company, active=True)
 
     status_counts = {
-        row["status"]: row["total"] for row in base_appointments.values("status").annotate(total=Count("id"))
+        row["status"]: row["total"]
+        for row in base_appointments.values("status").annotate(total=Count("id"))
     }
 
     recent_daily_map = {
@@ -26,6 +29,7 @@ def get_dashboard_summary(*, company, period_days=7):
         .values("date")
         .annotate(total=Count("id"))
     }
+
     recent_daily = [
         {
             "date": period_start + timedelta(days=idx),
@@ -33,6 +37,8 @@ def get_dashboard_summary(*, company, period_days=7):
         }
         for idx in range(period_days)
     ]
+
+    completed_appointments = base_appointments.filter(status="completed")
 
     return {
         "period_days": period_days,
@@ -52,9 +58,7 @@ def get_dashboard_summary(*, company, period_days=7):
         },
         "revenue": {
             "completed_count": status_counts.get("completed", 0),
-            "completed_amount": (
-                base_appointments.filter(status="completed").aggregate(total=Sum("service__price"))["total"] or 0
-            ),
+            "completed_amount": completed_appointments.aggregate(total=Sum("service__price"))["total"] or 0,
         },
         "recent_daily": recent_daily,
     }

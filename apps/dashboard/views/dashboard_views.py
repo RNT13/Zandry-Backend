@@ -5,7 +5,10 @@ from rest_framework.views import APIView
 
 from apps.dashboard.permissions import IsCompanyUser
 from apps.dashboard.selectors.dashboard_queries import get_dashboard_summary
-from apps.dashboard.serializers.output import DashboardSummarySerializer
+from apps.dashboard.serializers.output import (
+    DashboardSummaryQuerySerializer,
+    DashboardSummarySerializer,
+)
 
 
 class DashboardSummaryView(APIView):
@@ -23,6 +26,12 @@ class DashboardSummaryView(APIView):
         responses={200: DashboardSummarySerializer},
     )
     def get(self, request):
-        days = request.query_params.get("days", 7)
-        payload = get_dashboard_summary(company=request.user.company, period_days=days)
+        query_serializer = DashboardSummaryQuerySerializer(data=request.query_params)
+        query_serializer.is_valid(raise_exception=True)
+
+        payload = get_dashboard_summary(
+            company=request.user.company,
+            period_days=query_serializer.validated_data["days"],
+        )
+
         return Response(payload)

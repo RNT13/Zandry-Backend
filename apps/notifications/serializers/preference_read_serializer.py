@@ -13,6 +13,7 @@ class NotificationPreferenceSerializer(serializers.ModelSerializer):
             "recipient_type",
             "allow_in_app",
             "allow_whatsapp",
+            "allow_email",
             "booking_created",
             "booking_confirmed",
             "booking_cancelled",

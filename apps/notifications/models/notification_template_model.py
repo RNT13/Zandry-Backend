@@ -7,6 +7,7 @@ class NotificationTemplate(BaseModel):
     class ChannelChoices(models.TextChoices):
         IN_APP = "in_app", "In App"
         WHATSAPP = "whatsapp", "WhatsApp"
+        EMAIL = "email", "Email"
 
     class EventChoices(models.TextChoices):
         BOOKING_CREATED = "booking_created", "Booking Created"

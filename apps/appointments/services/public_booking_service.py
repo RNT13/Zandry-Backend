@@ -9,6 +9,7 @@ from rest_framework.exceptions import ValidationError
 
 from apps.appointments.models import Appointment
 from apps.appointments.services.public_availability_service import validate_public_booking_slot
+from apps.appointments.services.send_appointment_verification_email_service import send_appointment_verification_email
 from apps.clients.services.upsert_client_service import upsert_public_client
 from apps.companies.models import Company
 from apps.notifications.services.booking_notifications_service import notify_booking_created
@@ -73,6 +74,8 @@ def create_public_booking(validated_data: dict) -> dict:
         appointment=appointment,
         client=client,
     )
+
+    send_appointment_verification_email(appointment=appointment)
 
     return {
         "id": str(appointment.id),

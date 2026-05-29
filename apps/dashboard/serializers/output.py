@@ -1,6 +1,10 @@
 from rest_framework import serializers
 
 
+class DashboardSummaryQuerySerializer(serializers.Serializer):
+    days = serializers.IntegerField(min_value=1, max_value=90, default=7)
+
+
 class DashboardTotalsSerializer(serializers.Serializer):
     clients = serializers.IntegerField()
     professionals = serializers.IntegerField()
